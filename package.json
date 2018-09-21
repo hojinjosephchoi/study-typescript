@@ -11,9 +11,11 @@
     "typescript": "^3.0.3"
   },
   "scripts": {
-    "devwatch": "tsc -w"
+    "devwatch": "tsc -w",
+    "start": "tsc-watch --onSuccess \" node dist/test.js\" "
   },
   "devDependencies": {
+    "tsc-watch": "^1.0.27",
     "tslint": "^5.11.0"
   }
 }

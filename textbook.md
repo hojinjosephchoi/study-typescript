@@ -123,3 +123,141 @@ $ tslint --init
 - rootDirs
   - 배열 안에서 상대 경로를 찾는 방식
 
+
+## 5. Typescript Basic Types
+- 사용자가 만든 타입은 결국은 primitive type으로 쪼개진다.
+
+### Javascript 기본 자료형을 포함 (superset)
+- boolean
+- number
+- string
+- null
+- undefined
+- symbol (ECMAScript 6에 추가)
+- array: object 형
+
+### 프로그래밍을 도울 몇가지 타입 추가
+- any => 적폐
+- void
+- never
+- enum
+- tuple: object 형
+
+
+### primitive type
+- 오브젝트와 레퍼런스 형태가 아닌 실제 값을 저장하는 자료형
+- primitive type의 내장 함수를 사용할 수 있는 것은 자바스크립트 처리방식 덕분 (순간적으로 wrapper 객체로 변환 후 다시 primitive type으로 변환)
+
+### literal
+- 값 자체가 변하지 않는 값
+- number 리터럴
+- string 리터럴
+- boolean 리터럴
+- object 리터럴
+
+### Boolean / boolean
+- true / false
+- TS에서는 다음과 같은 코드의 경우 오류로 인식한다.
+```
+let isOk: boolean = new Boolean(true);
+```
+
+### Number / number
+- 모든 숫자는 부동 소수점 값
+- 16진수, 10진수 외, ES2015에 도입된 2진수, 8진수 지원
+```
+let decimal: number = 6;
+let hex: number = 0xf00d;
+let binary: number = 0b1010;
+let octal: number = 0o744;
+```
+
+### String / string
+- 문자열 '', ""
+
+### Template String
+- 행에 걸쳐있는것, javascript 변수 받아서 쓸 경우
+- 백틱 ``으로 사용
+
+### undefined && null
+- typescript에서는 각각 고유 타입이 있다.
+- null/undefined는 다른 타입의 sub타입이다.
+- 컴파일 옵션에서 `--strictNullChecks` 사용 시에는 null/undefined는 void나 자기 자신에게만 할 당할 수 있다.
+- 이 경우 union type을 이용해야 한다.
+```
+let union: string | null = null;
+```
+
+### void
+- 타입이 없는 상태
+- any와 반대의 의미
+- 함수 리턴이 없을 때 주로 사용
+
+### any (적폐)
+- 어떤 타입이어도 상관없는 타입
+- 이걸 최대한 쓰지 않는게 핵심
+- 컴파일 옵션 중 any를 쓰면 오류를 뱉도록 하는 옵션 `--noImplicitAny` 존재함
+
+### never
+- end point에 닿을 수 없는 경우에 사용
+- 쓸일 없을 것임...
+```
+function error(message: string): never {
+  throw new Error(message);
+}
+function fail {
+  return error('something failed');
+}
+function infiniteLoop(): never {
+  while (true) {
+  }
+}
+```
+
+### array
+- Array<타입>
+- 타입[]
+```
+let list: number[] = [1, 2, 3];
+let list: Array<number> = [1, 2, 3];
+```
+
+### tuple
+- 배열인데 타입이 한가지가 아닌 경우
+- 꺼내 사용할 때 주의가 필요
+```
+let x: [string, number];
+x = ['hello', 10]; // ok
+x = [10, 'hello']; // error
+x[3] = 'world'; //ok, 'string' can be assigned to 'string | number'
+x[4] = true; //error, 'boolean' isn't 'string | number'
+x[5].toString(); //ok, 'string' and 'number' both have 'toString()' method
+```
+
+### enum
+```
+enum Color {Red, Green, Blue}
+let c: Color = Color.Green;
+
+enum Color {Red = 1, Green, Blue}
+let c: Color = Color.Green;
+
+enum Color {Red = 1, Green = 2, Blue = 4}
+let c: Color = Color.Green;
+
+enum Color {Red = 1, Green, Blue}
+let colorName: string = Color[2];
+```
+
+### symbol
+- ES2015 Symbol과 동일
+- primitive type의 값을 담아서 사용
+- 고유하고 수정불가능한 값으로 만듦
+- 주로 접근을 제어하는데 쓰는 경우가 많음 (private 만들 때...)
+```
+let sym = Symbol();
+let obj = {
+  [sym]: 'value'
+};
+console.log(obj[sym]); // "value"
+```
