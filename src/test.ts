@@ -3,6 +3,8 @@ class Test {
     console.log('test');
   }
 }
-new Test();
+
+let n = 1;
+n.toString();
 
 let myName = 'hojin';

@@ -7,6 +7,7 @@
   "author": "hojin.joseph.choi <escape3rd@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "moment": "^2.22.2",
     "typescript": "^3.0.3"
   },
   "scripts": {
