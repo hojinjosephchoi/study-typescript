@@ -295,3 +295,82 @@ const d = '디이';
 // c는 명시적으로 지정된 타입인 string
 // d는 타입추론에 의한 타입인 리터럴타입 "디이"
 ```
+
+
+## 7. Type Assertions, Type Alias
+### Type Assertions
+- 형변환과 다름 (형변환은 실제 데이터 구조를 바꿈)
+- Type Assertions는 '타입이 이것이다'라고 컴파일러에게 알려주는 것을 의미
+- 행동에 대해서 작성자가 100% 신뢰하는 것이 중요
+- 문법적으로 두가지 방법
+```
+변수 as 강제할타입
+<강제할타입>변수
+```
+
+- 예시
+```
+let someValue: any = 'this is a string';
+
+let strLength1: number = (<string>someValue).length;
+let strLength2: number = (someValue as string).length;
+// 주로 넓은 타입에서 좁은 타입으로 강제하는 경우가 많다.
+// jsx에서는 as를 쓴다.
+```
+
+> 컴파일러를 속였을 경우, runtime에서 에러가 발생할 수 있다.
+> 따라서 Type Assertions을 사용한다는 것은 컴파일러에게 확실하게 신뢰할 수 있도록 하기 위함이다.
+
+### Type Alias
+- 인터페이스랑 비슷해보인다.
+- Primitive, Union Type, Tuple
+> Primitive 타입에 대해서 사용하는 것은 의미가 없다.
+> 주로 Union Type이나 Tuple에서 사용한다.
+
+- 기타 직접 작성해야 하는 타입을 다른 이름으로 지정할 수 있다.
+- 만들어진 타입의 refer로 사용하는 것이지, 타입을 만드는 것은 아니다.
+
+#### Aliasing Union Type
+```
+function test(arg: string | number): string | number {
+  return arg;
+}
+
+// 반복적인 union 타입에 별칭을 줘서 여러군데에서 사용할 수 있게 한다.
+type StringOrNumber = string | number;
+
+function test(arg: StringOrNumber): StringOrNumber {
+  return arg;
+}
+```
+
+#### Aliasing Tuple
+```
+let person: [string, number] = ['Mark', 35];
+
+// 반복적인 튜플 타입에 별칭을 줘서 여러군데에서 사용할 수 있게 한다.
+type PersonTuple = [string, number];
+
+let another: PersonTuple = ['Anna', 24];
+```
+
+- Type Alias로 Generic 표현하기
+- [Type Alias와 keyof 키워드 사용하기](https://www.youtube.com/playlist?list=PLV6pYUAZ-ZoE8uRXG51003heNA0EATIxN)
+
+#### Type Alias와 Interface의 차이점
+- TypeScript가 컴파일 시 문제 발생할 경우 Interface는 Interface명으로 명확히 알려주나, Alias는 아니다.
+```
+type Alias = { num: number };
+
+interface Interface {
+  num: number;
+}
+
+declare function aliased(arg: Alias): Alias;
+declare function interfaced(arg: Interface): Interface;
+```
+- type alias 간 extends, implements 불가 
+- interface extends type alias 가능
+- class implements type alias 가능
+- class extends type alias 불가 (class에서 interface를 extends할 수 없다.)
+- 마치 interface 처럼 동작한다.

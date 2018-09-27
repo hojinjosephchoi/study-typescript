@@ -1,11 +1,25 @@
-let a: string = '에이';
-let b = '비이';
-// a는 명시적으로 지정된 타입인 string
-// b는 타입추론에 의한 타입인 string
+type PersonAlias = {
+  name: string;
+  age: number;
+};
 
-const c: string = '씨이';
-const d = '디이';
-// c는 명시적으로 지정된 타입인 string
-// d는 타입추론에 의한 타입인 리터럴타입 "디이"
+interface IPerson extends PersonAlias {
 
-console.log(a, b, c, d);
+}
+
+let ip: IPerson = {
+  name: 'Mark',
+  age: 35,
+};
+
+class PersonImpl implements PersonAlias {
+  public name: string = '이름';
+  public age: number = 20;
+
+  public hello() {
+    console.log('안녕하세요');
+  }
+}
+
+let pi: PersonImpl = new PersonImpl();
+pi.hello();
