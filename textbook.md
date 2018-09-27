@@ -261,3 +261,37 @@ let obj = {
 };
 console.log(obj[sym]); // "value"
 ```
+
+
+## 6. var, let, const
+- [TypeScript Playground](https://www.typescriptlang.org/play/index.html)
+
+### var
+- ES5
+- 변수의 유효범위 : 함수 스코프
+- 호이스팅 되는 특성
+- 재선언 (redeclare) 가능
+
+### let, const
+- ES6
+- 변수의 유효범위 : 블록 스코프
+- 호이스팅 안됨 (호이스팅은 되는거 아닌가???)
+- 재선언 (redeclare) 불가
+
+> var 말고 let, const를 사용하자
+
+#### let, const의 타입 추론
+- let은 타입추론에 의한 특정 타입이 들어간다
+```
+let a: string = '에이';
+let b = '비이';
+// a는 명시적으로 지정된 타입인 string
+// b는 타입추론에 의한 타입인 string
+```
+- const는 타입추론에 의한 타입이 특정 타입이 아니라 __리터럴타입__ 이 들어간다.
+```
+const c: string = '씨이';
+const d = '디이';
+// c는 명시적으로 지정된 타입인 string
+// d는 타입추론에 의한 타입인 리터럴타입 "디이"
+```
