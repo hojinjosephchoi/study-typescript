@@ -1,25 +1,15 @@
-type PersonAlias = {
+interface IPerson {
   name: string;
   age: number;
-};
-
-interface IPerson extends PersonAlias {
-
 }
 
-let ip: IPerson = {
+const person: IPerson = {
   name: 'Mark',
-  age: 35,
+  age: 32
 };
 
-class PersonImpl implements PersonAlias {
-  public name: string = '이름';
-  public age: number = 20;
-
-  public hello() {
-    console.log('안녕하세요');
-  }
+function hello(p: IPerson): void {
+  console.log(`안녕하세요 ${p.name} 입니다.`);
 }
 
-let pi: PersonImpl = new PersonImpl();
-pi.hello();
+hello(person);

@@ -358,7 +358,7 @@ let another: PersonTuple = ['Anna', 24];
 - [Type Alias와 keyof 키워드 사용하기](https://www.youtube.com/playlist?list=PLV6pYUAZ-ZoE8uRXG51003heNA0EATIxN)
 
 #### Type Alias와 Interface의 차이점
-- TypeScript가 컴파일 시 문제 발생할 경우 Interface는 Interface명으로 명확히 알려주나, Alias는 아니다.
+- TypeScript가 컴파일 시 문제 발생할 경우 Interface는 Interface명으로 명확히 알려주나, Alias는 Object Literal로만 알려준다.
 ```
 type Alias = { num: number };
 
@@ -374,3 +374,188 @@ declare function interfaced(arg: Interface): Interface;
 - class implements type alias 가능
 - class extends type alias 불가 (class에서 interface를 extends할 수 없다.)
 - 마치 interface 처럼 동작한다.
+
+## 8. interface
+### Basic
+- interface는 컴파일이 안된다. 
+- 컴파일 시점에 타입체킹을 위한 존재이다.
+- 함수 입/출력에서 타입역할을 할 수 있다.
+```
+interface IPerson {
+  name: string;
+  age: number;
+}
+
+const person: IPerson = {
+  name: 'Mark',
+  age: 32
+};
+
+function hello(p: IPerson): void {
+  console.log(`안녕하세요 ${p.name} 입니다.`);
+}
+```
+
+### Optional Property
+```
+// ?: 사용한 Option Property 구현
+interface IPerson {
+  name: string; //필수
+  age?: number; //옵션
+}
+
+// indexable type을 사용한 Option Property 구현
+// indexable type은 index가 number일 경우 array 처럼, index가 string일 경우 dictionary 같이 사용할 수 있다.
+interface IPerson {
+  name: string; //필수
+  [index: string]: string; //옵션
+}
+```
+
+### function in interface
+- interface 내 메소드를 정의할 수 있다. (java의 abstract method처럼??)
+```
+interface IPerson {
+  name: string;
+  age: number;
+  hello(): void;
+}
+
+const p1: Person = {
+  name: 'Mark',
+  age: 30,
+  hello: function(): void {
+    console.log(this);
+    console.log(`안녕하세요 ${this.name} 입니다.`);
+  }
+};
+
+const p2: Person = {
+  name: 'Mark',
+  age: 30,
+  hello(): void {
+    console.log(this);
+    console.log(`안녕하세요 ${this.name} 입니다.`);
+  }
+};
+
+const p3: Person = {
+  name: 'Mark',
+  age: 30,
+  hello: (): void => {
+    console.log(this);
+    console.log(`안녕하세요 ${this.name} 입니다.`);
+  }
+};
+
+p1.hello();
+p2.hello();
+p3.hello();
+```
+
+### class implements interface
+- interface를 사용하여 다형성을 구현할 수 있다.
+```
+interface IPerson {
+  name: string;
+  hello(): void;
+}
+
+class Person implements IPerson {
+  name: string = null;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  hello(): void {
+    console.log(`안녕하세요 ${this.name} 입니다.`);
+  }
+
+  public hi(): void {
+    console.log(`안녕하세요 ${this.name} 입니다.`);
+  }
+}
+
+const person: IPerson = new Person('Mark');
+person.hello();
+person.hi();  // 에러발생, person 변수의 타입을 Person으로 하면 가능하다.
+```
+
+### interface extends interface
+- interface 끼리는 상속이 가능하다.
+```
+interface IPerson {
+  name: string;
+  age?: number;
+}
+
+interface IKorean extends IPerson {
+  city: string;
+}
+
+const k: IKorean = {
+  name: '최호진',
+  city: '부천'
+};
+```
+
+### function interface
+- 함수의 타입체크는 할당할 때가 아니라 사용할 때 하는 것을 명심해야 한다.
+```
+interface HelloPerson {
+  (name: string, age?: number): void;
+}
+
+let helloPerson: HelloPerson = function (name: string) {
+  console.log(`안녕하세요: ${name} 입니다.`);
+};
+
+helloPerson('Joseph');
+```
+
+### indexable types
+- index는 string 또는 number만 가능
+```
+interface StringArray {
+  [index: number]: string;
+}
+
+const sa: StringArray = {}; // 옵셔널하다
+sa[100] = '백';
+
+interface StringDictionary {
+  [index: string]: string;
+}
+
+const sd: StringDictionary = {}; // 옵셔널하다
+sd.hundred = '백';
+
+interface StringArrayDictionary {
+  [index: number]: string;
+  [index: string]: string;
+}
+
+const sad: StringArrayDictionary = {}; // 옵셔널하다
+sad[100] = '백';
+sad.hundred = '백';
+```
+
+- string index = optional property
+```
+interface StringDictionary {
+  [index: string]: string;
+  name: string;
+}
+
+const sd: StringDictionary = {
+  name: '이름' // 필수
+};
+
+sd.any = 'any'; // 어떤 프로퍼티도 가능
+
+interface StringDictionaryNo {
+  [index: string]: string;
+  // name: number; // (x) 인덱서블 타입이 string값을 가지기 때문에 number를 필수로 끌어오면 에러
+}
+```
