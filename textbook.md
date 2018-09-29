@@ -722,3 +722,172 @@ class Child extends Parent {
 
 const person: Child = new Child(5);
 ```
+
+
+## 10. Class (2)
+### 클래스와 getter, setter
+- get / set 키워드 사용 (C#, ES6와 같다)
+```
+class Person {
+  constructor(private _name: string, private _age: number) {
+  }
+
+  get name() {
+    return this._name;
+  }
+
+  set name(name: string) {
+    this._name = `Mr. ${name}`;
+  }
+}
+
+const person: Person = new Person('Joseph', 30);
+
+console.log(person.name);
+person.name = 'Choi';
+console.log(person.name);
+```
+
+### 클래스와 static 프로퍼티 => 클래스 멤버변수
+- static 키워드를 붙인 프로퍼티는 클래스.프로퍼티로 사용한다.
+- static 프로퍼티에 private, protected를 붙이면 똑같이 동작한다.
+```
+class Person {
+  public static CITY = '';
+  private static lastName: string = 'Choi';
+  constructor(private _name: string, private _age: number) {
+  }
+
+  public print() {
+    console.log(`${this._name} ${Person.lastName} in ${Person.CITY}`);
+  }
+}
+
+const person: Person = new Person('Joseph', 30);
+Person.CITY = 'Bucheon';
+person.print();
+```
+
+### 클래스와 static 메소드 => 클래스 멤버함수
+```
+class Person {
+  public static Talk(): void {
+    console.log('안녕하세요');
+  }
+}
+
+Person.Talk();
+```
+
+### 모듈에서 private static 프로퍼티 혹은 메소드
+- private static 프로퍼티를 사용하는 것과 const 변수
+- private static 메소드를 사용하는 것과 function 사용
+```
+class Person {
+  private static PROPERTY = '프라이빗 프로퍼티';
+  private static METHOD() {
+    console.log('프라이빗 메소드');
+  }
+
+  constructor() {
+    console.log(Person.PROPERTY);
+    Person.METHOD();
+  }
+}
+```
+
+```
+const PROPERTY = '모듈 내 변수';
+function METHOD() {
+  console.log('모듈 내 함수');
+}
+
+export class Person {
+  constructor() {
+    console.log(PROPERTY);
+    METHOD();
+  }
+}
+```
+
+### Abstract Class
+- abstract 키워드가 사용된 클래스는 new로 생성할 수 없다.
+- abstract 키워드가 사용된 클래스를 상속하면 abstract 키워드가 붙은 함수를 구현해야 한다.
+```
+abstract class APerson {
+  protected _name: string = 'Joseph';
+  abstract setName(name: string): void;
+}
+
+class Person extends APerson {
+  setName(name: string): void {
+    this._name = name;
+  }
+}
+
+const person = new Person();
+```
+
+### 클래스와 private constructor
+- 생성자 함수 앞에 접근제어자인 private을 붙일 수 있다.
+- 외부에서 생성이 불가능하다.
+```
+class Preference {
+  private constructor() {
+
+  }
+}
+
+// const p: Preference = new Preference(); // (x)
+```
+
+### 클래스와 싱글톤 패턴
+- private 생성자를 이용해서 내부에서만 인스턴스 생성이 가능하다.
+- public static 메소드를 통해 private static 인스턴스 레퍼런스를 획득한다.
+- Lazy Loading (Initialization) : 최초 실행시가 아니라, 사용시에 할당 함
+```
+class Preference {
+  public static getInstance() {
+    if (Preference.instance === null) {
+      Preference.instance = new Preference();
+    }
+
+    return Preference.instance;
+  }
+  private static instance: Preference = null;
+  private constructor() {
+
+  }
+
+  hello() {
+    console.log('안녕');
+  }
+}
+
+const p: Preference = Preference.getInstance();
+p.hello();
+```
+
+### 클래스와 readonly
+- private readonly로 선언된 경우, 생성자에서는 할당이 가능하다.
+- private readonly로 선언된 경우, 생성자 이외에서는 할당이 불가능하다.
+- public readonly로 선언된 경우, 클래스 외부에서는 다른 값을 할당할 수 없다.
+- 마치 getter 만 있는 경우와 같다.
+```
+class Person {
+  private readonly _name: string = null;
+  public readonly age: number = 35;
+
+  constructor(name: string) {
+    this._name = name;
+  }
+
+  public setName(name: string) {
+    // this._name = name; // (x)
+  }
+}
+
+const p: Person = new Person('Joseph');
+console.log(p.age);
+// p.age = 30; // (x)
+```

@@ -1,26 +1,20 @@
-class Parent {
-  constructor(protected _name: string, private _age: number) {
+class Person {
+  private _firstName: string = '';
+  get firstName() {
+    return this._firstName;
   }
-
-  print(): void {
-    console.log(`이름은 ${this._name} 이고, 나이는 ${this._age} 세 입니다.`);
-  }
-
-  protected printName = (): void => {
-    console.log(`이름은 ${this._name} 입니다.`);
-  }
-
-  protected printAge(): void {
-    console.log(`나이는 ${this._age} 세 입니다.`);
+  set firstName(value: string) {
+    if (value.length > 3) {
+      this._firstName = value;
+    } else {
+      this._firstName = '';
+    }
   }
 }
 
-class Child extends Parent {
-  constructor(age: number) {
-    super('Joseph Jr.', age);
-    this.printName();
-    this.printAge();
-  }
-}
-
-const person: Child = new Child(5);
+const person = new Person();
+console.log(person.firstName);
+person.firstName = 'Ma';
+console.log(person.firstName);
+person.firstName = 'Maximilian';
+console.log(person.firstName);
