@@ -1,15 +1,26 @@
-interface IPerson {
-  name: string;
-  age: number;
+class Parent {
+  constructor(protected _name: string, private _age: number) {
+  }
+
+  print(): void {
+    console.log(`이름은 ${this._name} 이고, 나이는 ${this._age} 세 입니다.`);
+  }
+
+  protected printName = (): void => {
+    console.log(`이름은 ${this._name} 입니다.`);
+  }
+
+  protected printAge(): void {
+    console.log(`나이는 ${this._age} 세 입니다.`);
+  }
 }
 
-const person: IPerson = {
-  name: 'Mark',
-  age: 32
-};
-
-function hello(p: IPerson): void {
-  console.log(`안녕하세요 ${p.name} 입니다.`);
+class Child extends Parent {
+  constructor(age: number) {
+    super('Joseph Jr.', age);
+    this.printName();
+    this.printAge();
+  }
 }
 
-hello(person);
+const person: Child = new Child(5);

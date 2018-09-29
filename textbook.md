@@ -559,3 +559,166 @@ interface StringDictionaryNo {
   // name: number; // (x) 인덱서블 타입이 string값을 가지기 때문에 number를 필수로 끌어오면 에러
 }
 ```
+
+## 9. Class (1)
+### Basic
+- class 키워드를 사용한다.
+- new 키워드와 함께 객체를 생성한다.
+
+
+### 클래스와 프로퍼티의 접근제어자
+- 멤버변수에 대한 default 접근제한자는 public이다.
+- 클래스의 프로퍼티(멤버변수)가 정의되어있지만, 값을 대입하지 않으면 undefined 이다. 
+  - 컴파일된 js 내 오브젝트에 프로퍼티가 아예 존재하지 않는다.
+  - 습관적으로 프로퍼티에 null 처리하는 방법을 고려해본다.
+```
+class Person {
+  name: string;
+  age: number;
+
+  constructor(name: string) {
+    this.name = name;
+  }
+}
+
+const person = new Person('Joseph');
+
+console.log(person);
+```
+
+- private으로 설정된 property는 dot으로 접근할 수 없다.
+- 클래스 내부에서는 private 프로퍼티를 사용할 수 있다.
+- private이 붙은 변수나 함수는 underbar(_)를 이름 앞에 붙이는데, 이는 문법이 아닌 코딩 컨벤션이다.
+```
+class Person {
+  private _name: string = null;
+  public age: number = null;
+
+  constructor(name: string) {
+    this._name = name;
+  }
+
+}
+
+const person = new Person('Joseph');
+person.age = 30;
+```
+
+- 부모에서 private으로 설정된 프로퍼티는 상속을 받은 자식에서도 접근할 수 없다.
+- 부모에서 protected로 설정된 프로퍼티는 상속을 받은 자식에서 접근 가능하다.
+- 상속을 받은 자식 클래스에서 부모클래스의 프로퍼티에 this를 통해 접근하려면, 생성자에서 `super();`를 호출해야 한다.
+
+```
+class Parent {
+  private privateProp: string;
+  protected protectedProp: string;
+
+  constructor() {
+
+  }
+}
+
+class Child extends Parent {
+  constructor() {
+    super();
+
+    this.protectedProp = 'protected';
+    // this.privateProp = 'private'; // 불가
+  }
+}
+```
+
+### 클래스와 디폴트 생성자
+- 생성자 함수를 만들지 않으면 default constructor를 호출한다.
+- 생성자를 만들면 default constructor가 없어진다.
+
+### 클래스와 메소드
+- 클래스 내부에 작성된 메소드는 public이 디폴트
+- arrow function으로 작성 가능
+- private 접근제한자 사용 시 클래스 외부에서 접근 불가
+```
+class Person {
+  constructor(private _name: string, private _age: number) {
+  }
+
+  print(): void {
+    console.log(`이름은 ${this._name} 이고, 나이는 ${this._age} 세 입니다.`);
+  }
+
+  printName = (): void => {
+    console.log(`이름은 ${this._name} 입니다.`);
+  }
+
+  private printAge(): void {
+    console.log(`나이는 ${this._age} 세 입니다.`);
+  }
+}
+
+const person: Person = new Person('Joseph', 30);
+person.print();
+person.printName();
+// person.printAge(); // (x)
+```
+
+### 클래스와 상속
+- 상속은 extends 키워드를 이용한다.
+- 자식 클래스에서 default constructor는 부모의 생성자와 입력 형태가 같다.
+```
+class Parent {
+  constructor(protected _name: string, protected _age: number) {
+  }
+
+  print(): void {
+    console.log(`이름은 ${this._name} 이고, 나이는 ${this._age} 세 입니다.`);
+  }
+
+  printName = (): void => {
+    console.log(`이름은 ${this._name} 입니다.`);
+  }
+
+  private printAge(): void {
+    console.log(`나이는 ${this._age} 세 입니다.`);
+  }
+}
+
+class Child extends Parent {
+  _name = 'Joseph Jr.';
+}
+
+const person: Child = new Child('Joseph', 5);
+person.print();
+person.printName();
+```
+
+- 생성자를 정의하고, this를 사용하려면, super를 통해 부모의 생성자를 호출해줘야 한다.
+- super를 호출할 때는 부모 생성자의 입력 타입이 같아야 한다.
+- super를 호출하는 것은 클래스 외부에서 호출하는 것과 같다.
+- protected 함수를 호출해서 그 안의 private을 출력하는 것에 주의한다.
+```
+class Parent {
+  constructor(protected _name: string, private _age: number) {
+  }
+
+  print(): void {
+    console.log(`이름은 ${this._name} 이고, 나이는 ${this._age} 세 입니다.`);
+  }
+
+  protected printName = (): void => {
+    console.log(`이름은 ${this._name} 입니다.`);
+  }
+
+  protected printAge(): void {
+    console.log(`나이는 ${this._age} 세 입니다.`);
+  }
+}
+
+class Child extends Parent {
+  constructor(age: number) {
+    super('Joseph Jr.', age);
+    this.printName();
+    this.printAge();
+  }
+}
+
+const person: Child = new Child(5);
+```
