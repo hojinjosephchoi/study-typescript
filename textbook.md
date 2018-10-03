@@ -891,3 +891,93 @@ const p: Person = new Person('Joseph');
 console.log(p.age);
 // p.age = 30; // (x)
 ```
+
+## 11. Generic
+- 타입을 변수로 주고싶을 때 사용
+- any와 달리 타입 헬퍼가 정상적으로 작동함
+```
+function hello<T>(msg: T): T {
+  return msg;
+}
+```
+
+- Generic 타입을 쓰지 않으면, T로 추론
+- Generic 타입을 쓰면, T를 확인
+```
+hello('aaa');
+hello<number>('aaa'); // 에러
+hello<number>(5);
+```
+
+- Generic 타입을 []을 이용해서 배열로 사용 가능
+```
+function hello<T>(messages: T[]): T {
+  return messages[0];
+}
+```
+
+- Generic을 클래스에서 사용가능
+```
+class Person<T> {
+  private _name: T;
+
+  constructor(name: T) {
+    this._name = name;
+  }
+}
+
+const hojin = new Person<string>('hojin');
+```
+
+- Generic을 extends 할 수 있다.
+```
+class Person<T extends string | number> {
+  private _name: T;
+
+  constructor(name: T) {
+    this._name = name;
+  }
+}
+
+const hojin = new Person(false); // boolean 타입은 불가
+```
+
+- Generic을 두개 이상 사용할 수 있다.
+```
+class Person<T, K> {
+  private _name: T;
+  private _age: K;
+
+  constructor(name: T, age: K) {
+    this._name = name;
+    this._age = age;
+  }
+}
+new Person('hojin', 30);
+```
+
+- type lookup system (generic + keyof)
+```
+interface Person {
+  name: string;
+  age: number;
+}
+
+function getProperty<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+
+function setProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]) {
+  obj[key] = value;
+}
+
+const person: Person = {
+  name: 'hello',
+  age: 20,
+};
+
+console.log(getProperty(person, 'name'));
+// console.log(getProperty(person, 'orange')); // 오류발생
+setProperty(person, 'age', 25);
+console.log(getProperty(person, 'age'));
+```

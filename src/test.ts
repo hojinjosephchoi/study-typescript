@@ -1,20 +1,22 @@
-class Person {
-  private _firstName: string = '';
-  get firstName() {
-    return this._firstName;
-  }
-  set firstName(value: string) {
-    if (value.length > 3) {
-      this._firstName = value;
-    } else {
-      this._firstName = '';
-    }
-  }
+interface Person {
+  name: string;
+  age: number;
 }
 
-const person = new Person();
-console.log(person.firstName);
-person.firstName = 'Ma';
-console.log(person.firstName);
-person.firstName = 'Maximilian';
-console.log(person.firstName);
+function getProperty<T, K extends keyof T>(obj: T, key: K) {
+  return obj[key];
+}
+
+function setProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]) {
+  obj[key] = value;
+}
+
+const person: Person = {
+  name: 'hello',
+  age: 20,
+};
+
+console.log(getProperty(person, 'name'));
+// console.log(getProperty(person, 'orange')); // 오류발생
+setProperty(person, 'age', 25);
+console.log(getProperty(person, 'age'));
