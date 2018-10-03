@@ -1,22 +1,22 @@
-interface Person {
-  name: string;
-  age: number;
+class CustomIterable implements Iterable<string> {
+  [Symbol.iterator]() {
+    let nextInx = 0;
+    const arr: string[] = ['first', 'second'];
+
+    const iterator: Iterator<string> = {
+      next() {
+        return {
+          value: arr[nextInx++],
+          done: nextInx > arr.length,
+        };
+      },
+    };
+    return iterator;
+  }
 }
 
-function getProperty<T, K extends keyof T>(obj: T, key: K) {
-  return obj[key];
+const cIterable = new CustomIterable();
+
+for (const item of cIterable) {
+  console.log(item);
 }
-
-function setProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]) {
-  obj[key] = value;
-}
-
-const person: Person = {
-  name: 'hello',
-  age: 20,
-};
-
-console.log(getProperty(person, 'name'));
-// console.log(getProperty(person, 'orange')); // 오류발생
-setProperty(person, 'age', 25);
-console.log(getProperty(person, 'age'));
