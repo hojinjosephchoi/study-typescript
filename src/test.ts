@@ -1,23 +1,22 @@
-function printInfo(target: any, methodName: string, paramIndex: number) {
-  console.log(target);
-  console.log(methodName);
-  console.log(paramIndex);
+interface Person {
+  name: string;
+  age: number;
 }
 
-class Person {
-
-  private name: string;
-  private age: number;
-
-  constructor(name: string, @printInfo age: number) {
-    this.name = name;
-    this.age = age;
-  }
-
-  hello(@printInfo message: string) {
-    console.log(message);
-  }
-
+interface Car {
+  brand: string;
+  wheel: number;
 }
 
-const p = new Person('Joseph', 30);
+// 타입 가드
+function isPerson(obj: any): obj is Person {
+  return obj.name !== undefined;
+}
+
+function hello(obj: Person | Car) {
+  if (isPerson(obj)) {
+    console.log(obj.name);
+  } else {
+    console.log(obj.brand);
+  }
+}

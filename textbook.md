@@ -1174,3 +1174,74 @@ class Person {
 const p = new Person('Joseph', 30);
 ```
 
+## 14. Type Inference (타입추론)
+- 기본적으로 타입을 명시적으로 쓰지 않을 대 추론하는 방법에 대한 규칙
+  - 명시적으로 쓰는 것은 타입 추론이 아니라 코드를 읽기 좋게 하는 지름길
+- let은 기본적으로 우리가 아는 기본 자료형으로 추론
+- const는 리터럴 타입으로 추론
+  - 오브젝트 타입을 쓰지 않으면, 프로퍼티는 let 처럼 추론
+    - const person = {name: 'hojin', age: 30}; 이면
+    - person => {name: string, age: name;} 으로 추론
+- 대부분 추론이 쉽다.
+  - 단순 변수
+  - structuring, destructuring
+- array, 함수의 리턴에서는 원하는대로 얻기가 힘들다.
+
+### 배열타입 추론
+```
+const array1 = [];  // never[] 타입
+const array2 = ['a', 'b', 'c']; // string[] 타입
+const array3 = ['a', 1, false]; // union 타입
+
+class Animal {
+  name: string;
+}
+
+class Dog extends Animal {
+  dog: string;
+}
+
+class Cat extends Animal {
+  cat: string;
+}
+
+const array4 = [new Dog(), new Cat()]; // (Dog | Cat)[] union 타입
+```
+
+### 리턴타입 추론
+```
+// literal 'world' | 0 추론
+function hello(message: string | number) {
+  if (message === 'world') {
+    return 'world';
+  } else {
+    return 0;
+  }
+}
+```
+
+### 유니온 타입과 타입 가드
+```
+interface Person {
+  name: string;
+  age: number;
+}
+
+interface Car {
+  brand: string;
+  wheel: number;
+}
+
+// 타입 가드
+function isPerson(obj: any): obj is Person {
+  return obj.name !== undefined;
+}
+
+function hello(obj: Person | Car) {
+  if (isPerson(obj)) {
+    console.log(obj.name);
+  } else {
+    console.log(obj.brand);
+  }
+}
+```
