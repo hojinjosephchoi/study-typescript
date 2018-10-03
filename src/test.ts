@@ -1,22 +1,23 @@
-class CustomIterable implements Iterable<string> {
-  [Symbol.iterator]() {
-    let nextInx = 0;
-    const arr: string[] = ['first', 'second'];
+function printInfo(target: any, methodName: string, paramIndex: number) {
+  console.log(target);
+  console.log(methodName);
+  console.log(paramIndex);
+}
 
-    const iterator: Iterator<string> = {
-      next() {
-        return {
-          value: arr[nextInx++],
-          done: nextInx > arr.length,
-        };
-      },
-    };
-    return iterator;
+class Person {
+
+  private name: string;
+  private age: number;
+
+  constructor(name: string, @printInfo age: number) {
+    this.name = name;
+    this.age = age;
   }
+
+  hello(@printInfo message: string) {
+    console.log(message);
+  }
+
 }
 
-const cIterable = new CustomIterable();
-
-for (const item of cIterable) {
-  console.log(item);
-}
+const p = new Person('Joseph', 30);
