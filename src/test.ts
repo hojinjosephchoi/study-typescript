@@ -1,22 +1,23 @@
-interface Person {
-  name: string;
-  age: number;
+function printInfo(target: any, methodName: string, paramIndex: number) {
+  console.log(target);
+  console.log(methodName);
+  console.log(paramIndex);
 }
 
-function getProperty<T, K extends keyof T>(obj: T, key: K) {
-  return obj[key];
+class Person {
+
+  private name: string;
+  private age: number;
+
+  constructor(name: string, @printInfo age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  hello(@printInfo message: string) {
+    console.log(message);
+  }
+
 }
 
-function setProperty<T, K extends keyof T>(obj: T, key: K, value: T[K]) {
-  obj[key] = value;
-}
-
-const person: Person = {
-  name: 'hello',
-  age: 20,
-};
-
-console.log(getProperty(person, 'name'));
-// console.log(getProperty(person, 'orange')); // 오류발생
-setProperty(person, 'age', 25);
-console.log(getProperty(person, 'age'));
+const p = new Person('Joseph', 30);

@@ -981,3 +981,139 @@ console.log(getProperty(person, 'name'));
 setProperty(person, 'age', 25);
 console.log(getProperty(person, 'age'));
 ```
+
+
+## 13. Decorator
+### Decorator 종류
+- class Decorator
+- method Decorator
+- Property Decorator
+- parameter Decorator
+
+### Decorator 설정
+- tsconfig.json 파일 내 experimentalDecorators 활성화
+```
+...
+{
+  "compilerOptions": {
+    ...
+    "experimentalDecorators": true,
+    ...
+    },
+  ...
+}
+```
+
+### class decorator
+```
+function hello(constructor: Function) {
+  console.log(constructor);
+}
+
+@hello
+class Person {
+}
+```
+
+- spring의 aop 처럼 쓸 수도 있다.
+```
+function hello(constructor: Function) {
+  constructor.prototype.hello = () => {
+    console.log('hello hello');
+  };
+}
+
+@hello
+class Person {
+}
+
+const p = new Person();
+(<any>p).hello();
+```
+
+### method decorator
+```
+// canBeEditable 변수를 사용하기 위한 factory pattern
+function editable(canBeEditable: boolean) {
+  return function(target: any, propName: string, description: PropertyDescriptor) {
+    console.log(target);
+    console.log(propName);
+    console.log(description);
+
+    description.writable = canBeEditable;
+  };
+}
+
+class Person {
+  constructor() {
+    console.log('new Person()');
+  }
+
+  @editable(false)
+  hello() {
+    console.log('hello hello');
+  }
+}
+
+const p = new Person();
+p.hello();
+p.hello = () => {
+  console.log('world world');
+};
+p.hello();
+```
+
+### property decorator
+```
+function writable(canBeWritable: boolean) {
+  return function(target: any, propName: string): any {
+    console.log(target);
+    console.log(propName);
+
+    return {
+      writable: canBeWritable,
+    };
+  };
+}
+
+class Person {
+
+  @writable(false)
+  name: string = 'Joseph';
+  constructor() {
+    console.log('new Person()');
+  }
+
+}
+
+const p = new Person();
+console.log(p.name);
+```
+
+### parameter decorator
+```
+function printInfo(target: any, methodName: string, paramIndex: number) {
+  console.log(target);
+  console.log(methodName);
+  console.log(paramIndex);
+}
+
+class Person {
+
+  private name: string;
+  private age: number;
+
+  constructor(name: string, @printInfo age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  hello(@printInfo message: string) {
+    console.log(message);
+  }
+
+}
+
+const p = new Person('Joseph', 30);
+```
+
