@@ -981,3 +981,60 @@ console.log(getProperty(person, 'name'));
 setProperty(person, 'age', 25);
 console.log(getProperty(person, 'age'));
 ```
+
+## 12. iterator
+- es3
+```
+for (var i = 0; i < array.length; i++)
+```
+
+- es5
+```
+array.forEach
+```
+> return으로 루프에서 탈출할 수 없다
+
+- es6
+```
+for (const item of array)
+```
+> 배열에서만 사용이 가능
+
+### for..in 으로 Array 순회시...
+- 배열을 순회할 때는 사용하지 말것
+- index가 number가 아니라 string으로 나온다.
+- 배열의 프로퍼티를 순회할 수도 있다. (엔진에 따라 다르다)
+- prototype 체인의 프로퍼티를 순회할 수도 있다.
+- 루프가 무작위로 순회할 수도 있다.
+
+### Symbol.iterator
+- 프로퍼티이며, 함수가 구현되어있으면 iterable 하다고 한다.
+- Array, Map, Set, String, Int32Array, Uint32Array, etc에는 내장된 구현체가 있으므로 Iterable 하다.
+- 그냥 객체는 Iterable하지 않다.
+- Iterator를 통한 Itarable 객체의 Symbol.iterator 함수를 호출한다.
+- target: es3 or es5에서는 Array에만 for..of 사용가능, 일반객체 사용불가
+- target: es5에서는 Symbol.iterator 함수를 구현하면 어떤 객체에도 for..of 사용가능
+```
+class CustomIterable implements Iterable<string> {
+  [Symbol.iterator]() {
+    let nextInx = 0;
+    const arr: string[] = ['first', 'second'];
+
+    const iterator: Iterator<string> = {
+      next() {
+        return {
+          value: arr[nextInx++],
+          done: nextInx > arr.length,
+        };
+      },
+    };
+    return iterator;
+  }
+}
+
+const cIterable = new CustomIterable();
+
+for (const item of cIterable) {
+  console.log(item);
+}
+```
